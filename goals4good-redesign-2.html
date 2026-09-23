@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goals4Good</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #1a2e1a;
+    background: #fff;
+    line-height: 1.7;
+  }
+
+  /* ── Color Palette ── */
+  :root {
+    --green-900: #0d3321;
+    --green-800: #145232;
+    --green-700: #1a6b42;
+    --green-600: #208550;
+    --green-500: #28a463;
+    --green-400: #3dc47e;
+    --green-100: #e6f7ef;
+    --green-50:  #f2fbf6;
+    --teal-500:  #0d9488;
+    --teal-100:  #ccfbf1;
+    --accent:    #f59e0b;
+    --text-dark: #0f1e10;
+    --text-mid:  #374a38;
+    --text-light:#6b7c6c;
+    --border:    #d1e8d8;
+    --white:     #ffffff;
+  }
+
+  /* ── Navigation ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--green-900);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .nav-inner {
+    max-width: 1160px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 64px;
+  }
+  .nav-logo {
+    font-size: 1.35rem; font-weight: 800; color: var(--white);
+    text-decoration: none; letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--green-400); }
+  .nav-links {
+    display: flex; gap: 0.25rem; list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.82); text-decoration: none;
+    font-size: 0.88rem; font-weight: 500; padding: 0.45rem 0.75rem;
+    border-radius: 6px; transition: background 0.18s, color 0.18s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+  /* ── Page offset for fixed nav ── */
+  section { scroll-margin-top: 64px; }
+
+  /* ── Shared layout helpers ── */
+  .container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--green-600);
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+    font-weight: 800; color: var(--green-900); line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .section-subtitle {
+    font-size: 1.1rem; color: var(--text-mid); max-width: 640px; margin-bottom: 2.5rem;
+  }
+  .divider {
+    width: 56px; height: 4px; background: var(--green-500);
+    border-radius: 2px; margin: 1rem 0 2rem;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-block; padding: 0.75rem 2rem;
+    border-radius: 8px; font-weight: 700; font-size: 0.95rem;
+    text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer; border: none;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+  .btn-primary { background: var(--green-600); color: #fff; }
+  .btn-outline { background: transparent; color: var(--green-800); border: 2px solid var(--green-600); }
+  .btn-white  { background: #fff; color: var(--green-800); }
+  .btn-accent { background: var(--accent); color: #fff; }
+
+  /* ══════════════════════════════════
+     SECTION 1 — HOME / HERO
+  ══════════════════════════════════ */
+  #home {
+    background: linear-gradient(rgba(13,51,33,0.80), rgba(26,107,66,0.72)), url('https://lh3.googleusercontent.com/sitesv/AG8ngQUPpX-CGVBOQ2H0nnFF07fIY882jfecXaNb_3T5fORY7Nv9w-pR0HG3PJ_yX3gd37EOucaElY9RsqIwfbS0FK6Q8u5y1-cuMUkbS6vXNEHKPe8GhgaMUtMh80nI0pL5TFnxcklAifwrbeik6I23A1TXuigydjjKn3QSmMMcxrejpiVC49k2N2jAhm22n7z4WH4Nf4BiXuBJWtwmxDmvUKiyAZKflD8279RmmYy8=w1280') center/cover no-repeat;
+    padding: 120px 0 80px; min-height: 80vh;
+    display: flex; align-items: center;
+  }
+  .hero-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  .hero-text h1 {
+    font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 900;
+    color: #fff; line-height: 1.1; margin-bottom: 0.5rem;
+    letter-spacing: -0.03em;
+  }
+  .hero-text h1 em { color: var(--green-400); font-style: normal; }
+  .hero-text .hero-tagline {
+    font-size: 1.2rem; color: rgba(255,255,255,0.88);
+    margin: 1rem 0 2rem; line-height: 1.6;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .hero-card {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(12px); border-radius: 16px;
+    padding: 2.5rem 2rem; color: #fff;
+  }
+  .hero-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--green-400); }
+  .hero-card p { font-size: 0.98rem; line-height: 1.7; color: rgba(255,255,255,0.9); }
+
+  /* How We Help cards */
+  .how-section { padding: 80px 0; background: var(--green-50); }
+  .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2.5rem; }
+  .card {
+    background: #fff; border-radius: 14px; padding: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(20,82,50,0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover { box-shadow: 0 8px 28px rgba(20,82,50,0.13); transform: translateY(-3px); }
+  .card-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--green-100); display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1rem;
+  }
+  .card h3 { font-size: 1.15rem; font-weight: 700; color: var(--green-900); margin-bottom: 0.5rem; }
+  .card p  { font-size: 0.95rem; color: var(--text-mid); }
+
+  /* CTA Banner */
+  .cta-banner {
+    background: linear-gradient(90deg, var(--green-800), var(--teal-500));
+    padding: 64px 0; text-align: center;
+  }
+  .cta-banner h2 {
+    font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 800;
+    color: #fff; text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 1.75rem;
+  }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ══════════════════════════════════
+     SECTION 2 — ABOUT US
+  ══════════════════════════════════ */
+  #about { padding: 80px 0; background: #fff; }
+  .about-story {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    align-items: start; margin-bottom: 4rem;
+  }
+  .about-story p { font-size: 1.05rem; color: var(--text-mid); line-height: 1.8; }
+  .about-vision {
+    background: var(--green-100); border-left: 4px solid var(--green-500);
+    border-radius: 0 12px 12px 0; padding: 1.5rem 1.75rem;
+    font-size: 1.05rem; color: var(--green-900); font-style: italic;
+    margin-top: 1.5rem;
+  }
+  .team-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2.5rem;
+  }
+  .team-photo {
+  width: 100%;
+  max-width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 0.85rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  border: 3px solid var(--green-100);
+}
+.team-card {
+    text-align: center; background: var(--green-50);
+    border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 1.25rem;
+  }
+  .team-avatar {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-600), var(--teal-500));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: #fff; font-weight: 700;
+    margin: 0 auto 0.85rem;
+  }
+  .team-card h4 { font-size: 1rem; font-weight: 700; color: var(--green-900); }
+  .team-card span { font-size: 0.85rem; color: var(--text-light); }
+
+  /* ══════════════════════════════════
+     SECTION 3 — SCHOLARSHIP INFO
+  ══════════════════════════════════ */
+  #scholarships { padding: 80px 0; background: var(--green-50); }
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 3rem;
+  }
+  .step-card {
+    background: #fff; border-radius: 14px; padding: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(20,82,50,0.06);
+    display: flex; gap: 1.25rem; align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--green-600); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1rem;
+  }
+  .step-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--green-900); margin-bottom: 0.4rem; }
+  .step-card p  { font-size: 0.93rem; color: var(--text-mid); line-height: 1.65; }
+  .scholarship-note {
+    background: #fff; border-radius: 14px; padding: 2rem 2.5rem;
+    border: 1px solid var(--border); margin-top: 1rem;
+  }
+  .scholarship-note p { font-size: 1rem; color: var(--text-mid); line-height: 1.8; margin-bottom: 0.75rem; }
+  .scholarship-note p:last-child { margin-bottom: 0; }
+
+  /* ══════════════════════════════════
+     SECTION 4 — GET INVOLVED
+  ══════════════════════════════════ */
+  #get-involved { padding: 80px 0; background: #fff; }
+  .involve-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem;
+  }
+  .involve-card {
+    border-radius: 14px; padding: 2.25rem 1.75rem; text-align: center;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 10px rgba(20,82,50,0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .involve-card:hover { box-shadow: 0 8px 28px rgba(20,82,50,0.13); transform: translateY(-3px); }
+  .involve-card.green-bg { background: var(--green-600); border-color: var(--green-600); }
+  .involve-card.green-bg h3, .involve-card.green-bg p { color: #fff; }
+  .involve-card.light-bg { background: var(--green-50); }
+  .involve-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .involve-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--green-900); margin-bottom: 0.5rem; }
+  .involve-card p  { font-size: 0.95rem; color: var(--text-mid); line-height: 1.65; }
+  .partner-types {
+    display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem;
+  }
+  .partner-tag {
+    background: rgba(255,255,255,0.2); color: #fff;
+    padding: 0.3rem 0.9rem; border-radius: 999px;
+    font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.35);
+  }
+  .partners-box {
+    background: var(--green-50); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2rem 2.5rem;
+  }
+  .partners-box h3 { font-size: 1.1rem; font-weight: 700; color: var(--green-900); margin-bottom: 0.6rem; }
+  .partners-box p  { font-size: 0.97rem; color: var(--text-mid); }
+  .partners-box a  { color: var(--green-700); font-weight: 600; }
+
+  /* ══════════════════════════════════
+     SECTION 5 — UPCOMING EVENTS
+  ══════════════════════════════════ */
+  #events { padding: 80px 0; background: var(--green-50); }
+  .events-empty {
+    background: #fff; border-radius: 16px; padding: 4rem 2rem;
+    text-align: center; border: 2px dashed var(--border);
+  }
+  .events-empty .big-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .events-empty h3 { font-size: 1.3rem; font-weight: 700; color: var(--green-900); margin-bottom: 0.5rem; }
+  .events-empty p  { color: var(--text-light); }
+
+  /* ══════════════════════════════════
+     SECTION 6 — OUR IMPACT
+  ══════════════════════════════════ */
+  #impact { padding: 80px 0; background: #fff; }
+  .impact-goal {
+    background: linear-gradient(135deg, var(--green-900), var(--teal-500));
+    border-radius: 16px; padding: 3rem; color: #fff;
+    text-align: center; margin-bottom: 3rem;
+  }
+  .impact-goal h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; }
+  .impact-goal p  { font-size: 1.05rem; color: rgba(255,255,255,0.88); max-width: 600px; margin: 0 auto; }
+  .stats-row {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+  }
+  .stat-card {
+    background: var(--green-50); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2.5rem; text-align: center;
+  }
+  .stat-card .stat-label {
+    font-size: 1rem; font-weight: 700; color: var(--green-800); margin-bottom: 0.5rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .stat-card .stat-value {
+    font-size: 2.5rem; font-weight: 900; color: var(--green-600);
+  }
+  .stat-card .stat-sub { font-size: 0.88rem; color: var(--text-light); margin-top: 0.25rem; }
+
+  /* ══════════════════════════════════
+     SECTION 7 — FAQs
+  ══════════════════════════════════ */
+  #faqs { padding: 80px 0; background: var(--green-50); }
+  .faq-list { max-width: 780px; margin: 0 auto; }
+  .faq-item {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 1rem; overflow: hidden;
+  }
+  .faq-q {
+    width: 100%; background: none; border: none; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.25rem 1.5rem; text-align: left;
+    font-size: 1rem; font-weight: 700; color: var(--green-900);
+    font-family: inherit;
+  }
+  .faq-q:hover { background: var(--green-50); }
+  .faq-q .faq-icon {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--green-100); color: var(--green-700);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; font-weight: 800; transition: transform 0.2s;
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a {
+    display: none; padding: 0 1.5rem 1.25rem;
+    font-size: 0.97rem; color: var(--text-mid); line-height: 1.7;
+    border-top: 1px solid var(--border);
+  }
+  .faq-a a { color: var(--green-700); font-weight: 600; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-contact {
+    text-align: center; margin-top: 2.5rem;
+    font-size: 1rem; color: var(--text-mid);
+  }
+  .faq-contact a { color: var(--green-700); font-weight: 700; }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--green-900); color: rgba(255,255,255,0.75);
+    padding: 2.5rem 0; text-align: center; font-size: 0.88rem;
+  }
+  footer strong { color: #fff; }
+
+  /* ── Images ── */
+
+  /* ── Responsive ── */
+  @media (max-width: 820px) {
+    .hero-inner, .about-story { grid-template-columns: 1fr; gap: 2rem; }
+    .cards-grid, .team-grid, .involve-grid, .steps-grid, .stats-row { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo">Goals<span>4Good</span></a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#scholarships">Scholarship Information</a></li>
+      <li><a href="#get-involved">Get Involved</a></li>
+      <li><a href="#events">Upcoming Events</a></li>
+      <li><a href="#impact">Our Impact</a></li>
+      <li><a href="#faqs">FAQs</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+     SECTION 1 — HOME
+══════════════════════════════════ -->
+<section id="home">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="section-label" style="color:var(--green-400)">501(c)(3) Nonprofit · Kansas City</p>
+        <h1>Goals<em>4Good</em></h1>
+        <p class="hero-tagline">
+          Providing scholarships and support to youth soccer players, ensuring that every child has the opportunity to pursue their passion and develop their talents in a competitive environment.
+        </p>
+        <div class="hero-btns">
+          <a href="#get-involved" class="btn btn-white">Donate</a>
+          <a href="#scholarships" class="btn btn-outline" style="border-color:rgba(255,255,255,0.5);color:#fff;">Apply for a Scholarship</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h2>Welcome</h2>
+        <p>Goals4Good is a 501(c)(3) nonprofit located in the Kansas City area with the mission to provide scholarships and support to youth soccer players, ensuring that every child has the opportunity to pursue their passion and develop their talents in a competitive environment.</p>
+        <p style="margin-top:1rem">Competitive soccer can provide valuable opportunities for young athletes, but club fees, coaching, tournaments, equipment, and travel can make participation difficult for many families.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How We Help -->
+<div class="how-section">
+  <div class="container">
+    <p class="section-label">How We Help</p>
+    <h2 class="section-title">Making Soccer Accessible</h2>
+    <div class="divider"></div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🏆</div>
+        <h3>Scholarships</h3>
+        <p>We provide scholarships to help young players participate at high levels.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤝</div>
+        <h3>Community</h3>
+        <p>We build partnerships to create more opportunities that make soccer more accessible.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚽</div>
+        <h3>Opportunity</h3>
+        <p>We give young athletes the chance to develop their skills and pursue their goals.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA Banner -->
+<div class="cta-banner">
+  <div class="container">
+    <h2>Help Us Give Every Player a Chance to Play</h2>
+    <div class="cta-btns">
+      <a href="#get-involved" class="btn btn-white">Donate</a>
+      <a href="#scholarships" class="btn btn-accent">Apply for a Scholarship</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SECTION 2 — ABOUT US
+══════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <p class="section-label">Who We Are</p>
+    <h2 class="section-title">About Us</h2>
+    <div class="divider"></div>
+    <div class="about-story">
+      <div>
+        <h3 style="font-size:1.35rem;font-weight:800;color:var(--green-900);margin-bottom:1rem;">Our Story</h3>
+        <p>Founded by lifelong players Clare and Annabelle, Goals4Good aims to ensure dedicated players have access to a competitive playing environment to foster development of character and soccer skills, without financial barriers limiting their success. Clare and Annabelle are passionate about this cause because they believe every dedicated athlete should be able to participate in competitive sports and pursue their goals without financial need getting in the way of their dreams.</p>
+        <p style="margin-top:1rem">After playing soccer for so long, they are aware of the cost of competitive sports, and it is their goal to support youth players who have the passion for the game but not the resources needed to support their development. Through community support with donations and partnerships, our goal is for financial burdens to never be the reason a committed player has to quit.</p>
+      </div>
+      <div>
+        <div class="about-vision">
+          Goals4Good members envision a future where financial barriers do not prevent talented and passionate soccer players from accessing the opportunities they deserve.
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.35rem;font-weight:800;color:var(--green-900);margin-bottom:0.5rem;">Our Team</h3>
+    <div class="divider" style="margin-top:0.5rem"></div>
+    <div class="team-grid">
+      <div class="team-card">
+        <img src="https://lh3.googleusercontent.com/sitesv/AG8ngQUcSmCNApVTNLOzgCfUGA8afT6NvmSpru0Ipdsop75vnxiIV4xL_Tq2BoqK-5FhFl12t7CbNS2Q5a83KFf3Z4tLb6uy19_aC3PEFkUM_wjHKz2UC0M3GQtc49NQ4ZXtNqz7KP0mUX6evnuT-eE3LC2TUizedfsYCitXLx-jLzskGgvfxUbhVchN01x1yWrVubq9NtIUPzJ9OVFuPZaTJNry5FD5CcHV1LpGBSry=w1280" alt="Clare Brouhard" class="team-photo">
+        <h4>Clare Brouhard</h4>
+        <span>Co-founder</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">AH</div>
+        <h4>Annabelle Hebbeler</h4>
+        <span>Co-founder</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">KD</div>
+        <h4>Kristen Deladurantaye</h4>
+        <span>President</span>
+      </div>
+      <div class="team-card">
+        <img src="https://lh3.googleusercontent.com/sitesv/AG8ngQXEEL3nSaJHjmYWiWv2jfsPVfaGfGwo4nxGIM5OEQj-MecNG9EoUwMoB8o66Nt7mwIyIug26Pwng3OqLKvLqAtdRCsAm-PzoapmrAYGI09IwxTZda16sNnx60kU9sHhUkpBjmZWB2k_iFVV-uQO_9ayqRh7YexsQcE64smws4RtzqjENGtniVICzjaTo5L0QIBPhfOQonQbrNnnUxrhOoesB9UAQ2qYTdarSXRLGEM=w1280" alt="Skylee Deladurantaye" class="team-photo">
+        <h4>Skylee Deladurantaye</h4>
+        <span>Vice President</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">CK</div>
+        <h4>Chris Katterhenry</h4>
+        <span>Secretary</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">SH</div>
+        <h4>Scott Hebbeler</h4>
+        <span>Incorporator and Treasurer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECTION 3 — SCHOLARSHIP INFO
+══════════════════════════════════ -->
+<section id="scholarships">
+  <div class="container">
+    <p class="section-label">Funding Access</p>
+    <h2 class="section-title">Scholarships</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">How the Application Process Works:</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h3>Apply</h3>
+          <p>Complete the online form confirming age, geographic eligibility, soccer participation/level requirements, club recommendation, financial need requirements, and personal statements.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h3>Review</h3>
+          <p>Applications are reviewed by the Goals4Good board of directors based on the scholarship requirements, personal statements, financial need, and the number of scholarships available.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h3>Documentation</h3>
+          <p>Once your application is chosen to receive a scholarship, you will be asked to fill out a separate form providing one type of additional documentation that proves financial need such as proof of qualifying assistance or a pay stub.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h3>Award</h3>
+          <p>Selected recipients are contacted and scholarship funds are sent directly to the players' club.</p>
+        </div>
+      </div>
+    </div>
+    <div class="scholarship-note">
+      <p>Scholarships will be given in up to 2,500 dollar increments and rewarded to families that show need and have dedication to the game of soccer. Goals4Good considers household size, soccer-related expenses, and individual family circumstances when determining financial need.</p>
+      <p>Financial information will be treated confidentially and reviewed only by authorized scholarship reviewers. All scholarship money will be delegated directly to the players' club.</p>
+      <p>All players must receive a letter of recommendation from their club in order to be eligible for a scholarship.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECTION 4 — GET INVOLVED
+══════════════════════════════════ -->
+<section id="get-involved">
+  <div class="container">
+    <p class="section-label">Take Action</p>
+    <h2 class="section-title">Get Involved</h2>
+    <div class="divider"></div>
+    <div class="involve-grid">
+      <div class="involve-card green-bg">
+        <div class="involve-icon">💚</div>
+        <h3>Donate</h3>
+        <p>Donate using Givebutter or Venmo!</p>
+      </div>
+      <div class="involve-card light-bg">
+        <div class="involve-icon">🙋</div>
+        <h3>Volunteer</h3>
+        <p>Volunteer at any of our upcoming events or pop-ups! Check out our <a href="#events" style="color:var(--green-700);font-weight:600;">event page</a> to learn more.</p>
+      </div>
+      <div class="involve-card" style="background:var(--green-900);border-color:var(--green-900);">
+        <div class="involve-icon">🏢</div>
+        <h3 style="color:#fff;">Partner With Us</h3>
+        <p style="color:rgba(255,255,255,0.85);">We Partner With:</p>
+        <div class="partner-types">
+          <span class="partner-tag">Clubs</span>
+          <span class="partner-tag">Businesses</span>
+          <span class="partner-tag">Community Organizations</span>
+        </div>
+      </div>
+    </div>
+    <div class="partners-box">
+      <h3>Current Partners:</h3>
+      <p>If you are interested in partnering with us contact us at <a href="mailto:goals4goodkc@gmail.com">goals4goodkc@gmail.com</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECTION 5 — UPCOMING EVENTS
+══════════════════════════════════ -->
+<section id="events">
+  <div class="container">
+    <p class="section-label">What's Coming</p>
+    <h2 class="section-title">Events</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Upcoming Events:</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECTION 6 — OUR IMPACT
+══════════════════════════════════ -->
+<section id="impact">
+  <div class="container">
+    <p class="section-label">Making a Difference</p>
+    <h2 class="section-title">Our Impact</h2>
+    <div class="divider"></div>
+    <div class="impact-goal">
+      <h3>Our Goal</h3>
+      <p>Our goal is to raise enough money to support at least five scholarships for the 2026-2027 school year, with the number of scholarships given increasing year by year.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Scholarships Awarded</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">Growing year over year</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Money Raised</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">Every dollar goes to players</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     SECTION 7 — FAQs
+══════════════════════════════════ -->
+<section id="faqs">
+  <div class="container">
+    <p class="section-label">Questions Answered</p>
+    <h2 class="section-title">FAQs</h2>
+    <div class="divider"></div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Who can apply for a scholarship?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          High-level players who are dedicated to the game and have demonstrated financial need. Players must be aged U12-U18.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How much money can I receive?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Players can receive up to 2,500 dollars in club fees and other soccer expenses that go through their club. If remaining club fees are less than 2,500 dollars, the rest of the money will be put towards another scholarship.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How do I prove financial need?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          You can prove financial need by providing one type of additional documentation such as proof of qualifying assistance or a pay stub.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is financial information kept confidential?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Yes, all financial information is only seen by approved Goals4Good board members and will be deleted x amount of months after a scholarship is given.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          When are applications due?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Applications can be submitted year round based on club payments and other needs.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Are donations tax-deductible?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Yes, Goals4Good is a 501(c)(3) and any money given directly to the organization will be tax deductible. If given on Givebutter, you will automatically receive a tax deductible receipt. If given on Venmo, you will receive a receipt but may need to reach out to <a href="mailto:goals4goodkc@gmail.com">goals4goodkc@gmail.com</a> to get any additional information needed.
+        </div>
+      </div>
+
+      <p class="faq-contact">Have a different question? Email <a href="mailto:goals4goodkc@gmail.com">goals4goodkc@gmail.com</a> for more info.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="container">
+    <p><strong>Goals4Good</strong> · 501(c)(3) Nonprofit · Kansas City Area</p>
+    <p style="margin-top:0.4rem">Contact: <a href="mailto:goals4goodkc@gmail.com" style="color:var(--green-400)">goals4goodkc@gmail.com</a></p>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>
